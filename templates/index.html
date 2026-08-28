@@ -1,0 +1,462 @@
+﻿{% extends "base.html" %}
+
+{% block title %}AI Identity & Document Fraud Verification | SIH26188{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+    <!-- Hero / Stats Bar -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="bg-slate-900/60 backdrop-blur border border-slate-800 rounded-xl p-4 flex items-center justify-between">
+            <div>
+                <p class="text-xs text-slate-400 font-medium">Total Screenings</p>
+                <h3 id="stat-total" class="text-2xl font-bold text-white mt-1">0</h3>
+            </div>
+            <div class="w-10 h-10 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
+                <i data-lucide="files" class="w-5 h-5"></i>
+            </div>
+        </div>
+
+        <div class="bg-slate-900/60 backdrop-blur border border-slate-800 rounded-xl p-4 flex items-center justify-between">
+            <div>
+                <p class="text-xs text-slate-400 font-medium">Verified / Low Risk</p>
+                <h3 id="stat-low" class="text-2xl font-bold text-emerald-400 mt-1">0</h3>
+            </div>
+            <div class="w-10 h-10 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+                <i data-lucide="check-circle-2" class="w-5 h-5"></i>
+            </div>
+        </div>
+
+        <div class="bg-slate-900/60 backdrop-blur border border-slate-800 rounded-xl p-4 flex items-center justify-between">
+            <div>
+                <p class="text-xs text-slate-400 font-medium">Flagged / Review</p>
+                <h3 id="stat-medium" class="text-2xl font-bold text-amber-400 mt-1">0</h3>
+            </div>
+            <div class="w-10 h-10 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
+                <i data-lucide="alert-triangle" class="w-5 h-5"></i>
+            </div>
+        </div>
+
+        <div class="bg-slate-900/60 backdrop-blur border border-slate-800 rounded-xl p-4 flex items-center justify-between">
+            <div>
+                <p class="text-xs text-slate-400 font-medium">Tampered / Rejected</p>
+                <h3 id="stat-high" class="text-2xl font-bold text-rose-400 mt-1">0</h3>
+            </div>
+            <div class="w-10 h-10 rounded-lg bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-400">
+                <i data-lucide="shield-alert" class="w-5 h-5"></i>
+            </div>
+        </div>
+    </div>
+    <!-- Quick Demo Suite Bar (Instant 1-Click Hackathon Testing) -->
+    <div class="bg-gradient-to-r from-slate-900 via-slate-900 to-indigo-950/40 border border-indigo-500/20 rounded-2xl p-5 shadow-xl">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-3">
+            <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center">
+                    <i data-lucide="sparkles" class="w-4 h-4"></i>
+                </div>
+                <div>
+                    <h2 class="text-sm font-bold text-white tracking-wide">Quick Demo Scenarios (1-Click Evaluation)</h2>
+                    <p class="text-xs text-slate-400">Load pre-synthesized test cases directly into the AI verification pipeline</p>
+                </div>
+            </div>
+            <span class="text-xs font-mono text-indigo-400/80 bg-indigo-950/60 px-3 py-1 rounded-full border border-indigo-800/50">Instant Evaluation</span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mt-4">
+            <button type="button" onclick="loadSample('clean_aadhaar')" class="demo-btn text-left p-3.5 rounded-xl bg-slate-800/70 hover:bg-slate-800 border border-slate-700/60 hover:border-emerald-500/50 transition-all group">
+                <div class="flex items-center justify-between mb-1.5">
+                    <span class="text-xs font-bold text-slate-200 group-hover:text-emerald-400 transition-colors">1. Clean Aadhaar</span>
+                    <span class="text-[10px] font-semibold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">LOW RISK</span>
+                </div>
+                <p class="text-[11px] text-slate-400 leading-tight">Valid Aadhaar card + matching selfie portrait.</p>
+            </button>
+
+            <button type="button" onclick="loadSample('tampered_pan')" class="demo-btn text-left p-3.5 rounded-xl bg-slate-800/70 hover:bg-slate-800 border border-slate-700/60 hover:border-rose-500/50 transition-all group">
+                <div class="flex items-center justify-between mb-1.5">
+                    <span class="text-xs font-bold text-slate-200 group-hover:text-rose-400 transition-colors">2. Tampered PAN</span>
+                    <span class="text-[10px] font-semibold px-2 py-0.5 rounded bg-rose-500/20 text-rose-400 border border-rose-500/30">FRAUD</span>
+                </div>
+                <p class="text-[11px] text-slate-400 leading-tight">Spliced PAN number with ELA compression anomaly.</p>
+            </button>
+
+            <button type="button" onclick="loadSample('face_mismatch')" class="demo-btn text-left p-3.5 rounded-xl bg-slate-800/70 hover:bg-slate-800 border border-slate-700/60 hover:border-rose-500/50 transition-all group">
+                <div class="flex items-center justify-between mb-1.5">
+                    <span class="text-xs font-bold text-slate-200 group-hover:text-rose-400 transition-colors">3. Face Mismatch</span>
+                    <span class="text-[10px] font-semibold px-2 py-0.5 rounded bg-rose-500/20 text-rose-400 border border-rose-500/30">MISMATCH</span>
+                </div>
+                <p class="text-[11px] text-slate-400 leading-tight">Genuine passport + different applicant selfie.</p>
+            </button>
+
+            <button type="button" onclick="loadSample('poor_quality')" class="demo-btn text-left p-3.5 rounded-xl bg-slate-800/70 hover:bg-slate-800 border border-slate-700/60 hover:border-amber-500/50 transition-all group">
+                <div class="flex items-center justify-between mb-1.5">
+                    <span class="text-xs font-bold text-slate-200 group-hover:text-amber-400 transition-colors">4. Poor Quality ID</span>
+                    <span class="text-[10px] font-semibold px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 border border-amber-500/30">REVIEW</span>
+                </div>
+                <p class="text-[11px] text-slate-400 leading-tight">Heavily blurred capture triggering manual review.</p>
+            </button>
+        </div>
+    </div>
+    <!-- Upload Section -->
+    <form id="verify-form" class="space-y-6" onsubmit="handleVerifySubmit(event)">
+        <input type="hidden" id="selected-sample-id" name="sample_id" value="">
+        <input type="hidden" id="selfie-base64" name="selfie_base64" value="">
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Document Upload Box -->
+            <div class="bg-slate-900/70 backdrop-blur border border-slate-800 rounded-2xl p-6 flex flex-col justify-between relative overflow-hidden group hover:border-slate-700 transition-all">
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-9 h-9 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
+                                <i data-lucide="credit-card" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-base font-semibold text-white">Identity Document</h3>
+                                <p class="text-xs text-slate-400">Aadhaar, PAN, Passport, Driving License</p>
+                            </div>
+                        </div>
+                        <span id="doc-badge" class="hidden text-[11px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">Loaded</span>
+                    </div>
+
+                    <div id="doc-dropzone" onclick="document.getElementById('doc-file-input').click()" 
+                         class="border-2 border-dashed border-slate-700 hover:border-emerald-500/60 rounded-xl p-6 text-center cursor-pointer transition-colors bg-slate-950/40 relative min-h-[220px] flex flex-col items-center justify-center">
+                        <input type="file" id="doc-file-input" name="document_file" accept="image/*" class="hidden" onchange="handleDocFileChange(this)">
+                        
+                        <div id="doc-placeholder" class="flex flex-col items-center">
+                            <div class="w-12 h-12 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 mb-3 group-hover:scale-110 transition-transform">
+                                <i data-lucide="upload-cloud" class="w-6 h-6 text-emerald-400"></i>
+                            </div>
+                            <p class="text-sm font-medium text-slate-300">Click or Drag & Drop Document Image</p>
+                            <p class="text-xs text-slate-500 mt-1">Supports PNG, JPG, JPEG, WebP (Max 16MB)</p>
+                        </div>
+
+                        <div id="doc-preview-container" class="hidden w-full h-full flex flex-col items-center justify-center">
+                            <img id="doc-preview-img" src="" alt="Document Preview" class="max-h-48 rounded-lg object-contain border border-slate-800 shadow-md">
+                            <p id="doc-file-name" class="text-xs text-slate-400 mt-2 font-mono truncate max-w-xs"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4 flex items-center justify-between text-xs text-slate-500">
+                    <span>Forensic & OCR Analysis</span>
+                    <button type="button" onclick="clearDocFile()" id="doc-clear-btn" class="hidden text-rose-400 hover:underline">Remove</button>
+                </div>
+            </div>
+
+            <!-- Selfie / Live Photo Upload Box -->
+            <div class="bg-slate-900/70 backdrop-blur border border-slate-800 rounded-2xl p-6 flex flex-col justify-between relative overflow-hidden group hover:border-slate-700 transition-all">
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-9 h-9 rounded-lg bg-cyan-500/10 text-cyan-400 flex items-center justify-center">
+                                <i data-lucide="user-check" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-base font-semibold text-white">Applicant Selfie / Live Photo</h3>
+                                <p class="text-xs text-slate-400">Facial Biometric Comparison</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button type="button" onclick="openWebcamModal()" class="text-xs px-2.5 py-1 rounded-lg bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 flex items-center space-x-1.5 transition-colors">
+                                <i data-lucide="camera" class="w-3.5 h-3.5"></i>
+                                <span>Live Webcam</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="selfie-dropzone" onclick="document.getElementById('selfie-file-input').click()" 
+                         class="border-2 border-dashed border-slate-700 hover:border-cyan-500/60 rounded-xl p-6 text-center cursor-pointer transition-colors bg-slate-950/40 relative min-h-[220px] flex flex-col items-center justify-center">
+                        <input type="file" id="selfie-file-input" name="selfie_file" accept="image/*" class="hidden" onchange="handleSelfieFileChange(this)">
+                        
+                        <div id="selfie-placeholder" class="flex flex-col items-center">
+                            <div class="w-12 h-12 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 mb-3 group-hover:scale-110 transition-transform">
+                                <i data-lucide="user" class="w-6 h-6 text-cyan-400"></i>
+                            </div>
+                            <p class="text-sm font-medium text-slate-300">Click or Drag & Drop Selfie Photo</p>
+                            <p class="text-xs text-slate-500 mt-1">Or use live webcam capture</p>
+                        </div>
+
+                        <div id="selfie-preview-container" class="hidden w-full h-full flex flex-col items-center justify-center">
+                            <img id="selfie-preview-img" src="" alt="Selfie Preview" class="max-h-48 rounded-lg object-contain border border-slate-800 shadow-md">
+                            <p id="selfie-file-name" class="text-xs text-slate-400 mt-2 font-mono truncate max-w-xs"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4 flex items-center justify-between text-xs text-slate-500">
+                    <span>128-D Biometric Embedding Matching</span>
+                    <button type="button" onclick="clearSelfieFile()" id="selfie-clear-btn" class="hidden text-rose-400 hover:underline">Remove</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex items-center justify-center pt-2">
+            <button type="submit" id="verify-btn" 
+                    class="px-8 py-3.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-bold text-base shadow-lg shadow-emerald-500/25 flex items-center space-x-3 transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none">
+                <i data-lucide="shield-check" class="w-5 h-5"></i>
+                <span>Run Complete AI Verification Pipeline</span>
+            </button>
+        </div>
+    </form>
+    <!-- Progress Section -->
+    <div id="progress-section" class="hidden bg-slate-900/90 border border-slate-800 rounded-2xl p-6 shadow-2xl space-y-4">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-6 h-6 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin"></div>
+                <h4 id="progress-status-text" class="text-sm font-semibold text-white">Analyzing Document & Facial Biometrics...</h4>
+            </div>
+            <span id="progress-percent" class="text-xs font-mono text-emerald-400">45%</span>
+        </div>
+
+        <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
+            <div id="progress-bar-fill" class="bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-500 h-full rounded-full transition-all duration-300" style="width: 30%"></div>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 text-xs">
+            <div id="step-ocr" class="p-2 rounded-lg bg-slate-800/60 border border-slate-700/50 flex items-center space-x-2 text-slate-400">
+                <i data-lucide="file-text" class="w-4 h-4"></i>
+                <span>1. RapidOCR</span>
+            </div>
+            <div id="step-tamper" class="p-2 rounded-lg bg-slate-800/60 border border-slate-700/50 flex items-center space-x-2 text-slate-400">
+                <i data-lucide="search" class="w-4 h-4"></i>
+                <span>2. ELA Forensics</span>
+            </div>
+            <div id="step-face" class="p-2 rounded-lg bg-slate-800/60 border border-slate-700/50 flex items-center space-x-2 text-slate-400">
+                <i data-lucide="user-check" class="w-4 h-4"></i>
+                <span>3. Face Embedding</span>
+            </div>
+            <div id="step-risk" class="p-2 rounded-lg bg-slate-800/60 border border-slate-700/50 flex items-center space-x-2 text-slate-400">
+                <i data-lucide="cpu" class="w-4 h-4"></i>
+                <span>4. Risk Engine</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Dashboard -->
+    <div id="results-dashboard" class="hidden space-y-6">
+        <!-- Master Assessment Banner -->
+        <div id="risk-banner" class="rounded-2xl p-6 border shadow-2xl transition-all">
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                <div class="flex items-center space-x-4">
+                    <div id="risk-icon-box" class="w-14 h-14 rounded-2xl flex items-center justify-center text-3xl shadow-inner">
+                    </div>
+                    <div>
+                        <div class="flex items-center space-x-3">
+                            <h2 id="risk-verdict-title" class="text-2xl font-black tracking-tight text-white">VERIFIED / APPROVED</h2>
+                            <span id="risk-level-badge" class="px-3 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider">LOW RISK</span>
+                        </div>
+                        <p id="risk-screening-id" class="text-xs text-slate-400 mt-1 font-mono">Screening ID: SCR-20260827-XXXX</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center space-x-4 bg-slate-900/80 px-5 py-3 rounded-xl border border-slate-800">
+                    <div class="text-right">
+                        <p class="text-[11px] text-slate-400 font-medium uppercase tracking-wider">Composite Risk Score</p>
+                        <div class="flex items-baseline justify-end space-x-1">
+                            <span id="risk-score-value" class="text-3xl font-black text-white">12.5</span>
+                            <span class="text-xs text-slate-500">/ 100</span>
+                        </div>
+                    </div>
+                    <div id="risk-score-circle" class="w-12 h-12 rounded-full border-4 border-emerald-500 flex items-center justify-center font-bold text-xs">
+                        <span id="risk-gauge-pct">12%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6 pt-4 border-t border-slate-800/80">
+                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2 flex items-center space-x-1.5">
+                    <i data-lucide="info" class="w-3.5 h-3.5 text-emerald-400"></i>
+                    <span>Explainable Risk Assessment & Audit Trail</span>
+                </h4>
+                <ul id="risk-reasons-list" class="space-y-1.5 text-xs text-slate-300">
+                </ul>
+            </div>
+        </div>
+
+        <!-- 4 Sub-Module Detail Cards Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- 1. Biometric Face Verification Card -->
+            <div class="bg-slate-900/80 backdrop-blur border border-slate-800 rounded-2xl p-6 space-y-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-2.5">
+                        <i data-lucide="user-check" class="w-5 h-5 text-cyan-400"></i>
+                        <h3 class="text-base font-bold text-white">1. Face Verification (YuNet + SFace)</h3>
+                    </div>
+                    <span id="face-match-badge" class="px-2.5 py-1 rounded text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">MATCH</span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 bg-slate-950/60 p-4 rounded-xl border border-slate-800/80">
+                    <div class="text-center">
+                        <p class="text-[11px] text-slate-400 mb-2">Document Portrait</p>
+                        <div class="w-28 h-32 mx-auto rounded-lg overflow-hidden bg-slate-900 border border-slate-700 flex items-center justify-center">
+                            <img id="face-doc-crop" src="" alt="Doc Face" class="w-full h-full object-cover">
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-[11px] text-slate-400 mb-2">Selfie Photo</p>
+                        <div class="w-28 h-32 mx-auto rounded-lg overflow-hidden bg-slate-900 border border-slate-700 flex items-center justify-center">
+                            <img id="face-selfie-crop" src="" alt="Selfie Face" class="w-full h-full object-cover">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 text-xs">
+                    <div class="bg-slate-950/50 p-3 rounded-lg border border-slate-800">
+                        <p class="text-slate-400">Similarity Match</p>
+                        <p id="face-similarity-text" class="text-lg font-bold text-cyan-400 mt-0.5">85.4%</p>
+                    </div>
+                    <div class="bg-slate-950/50 p-3 rounded-lg border border-slate-800">
+                        <p class="text-slate-400">L2 Distance</p>
+                        <p id="face-l2-text" class="text-lg font-bold text-slate-200 mt-0.5">0.342</p>
+                    </div>
+                </div>
+                <p id="face-status-msg" class="text-xs text-slate-400 italic"></p>
+            </div>
+
+            <!-- 2. Tampering & Forensic ELA Card -->
+            <div class="bg-slate-900/80 backdrop-blur border border-slate-800 rounded-2xl p-6 space-y-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-2.5">
+                        <i data-lucide="shield-alert" class="w-5 h-5 text-rose-400"></i>
+                        <h3 class="text-base font-bold text-white">2. Tampering & Forensics (ELA)</h3>
+                    </div>
+                    <span id="tamper-badge" class="px-2.5 py-1 rounded text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">NORMAL</span>
+                </div>
+
+                <div class="bg-slate-950/60 p-4 rounded-xl border border-slate-800/80 text-center">
+                    <p class="text-[11px] text-slate-400 mb-2">Error Level Analysis (ELA) & Gradient Heatmap</p>
+                    <div class="max-h-44 rounded-lg overflow-hidden bg-slate-900 border border-slate-700 flex items-center justify-center mx-auto">
+                        <img id="tamper-heatmap-img" src="" alt="Forensic Heatmap" class="max-h-44 object-contain">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-3 gap-2 text-xs">
+                    <div class="bg-slate-950/50 p-2.5 rounded-lg border border-slate-800 text-center">
+                        <p class="text-slate-400 text-[10px]">Tamper Score</p>
+                        <p id="tamper-score-text" class="text-base font-bold text-white mt-0.5">14.2</p>
+                    </div>
+                    <div class="bg-slate-950/50 p-2.5 rounded-lg border border-slate-800 text-center">
+                        <p class="text-slate-400 text-[10px]">ELA Anomaly</p>
+                        <p id="tamper-ela-text" class="text-base font-bold text-slate-200 mt-0.5">0.4%</p>
+                    </div>
+                    <div class="bg-slate-950/50 p-2.5 rounded-lg border border-slate-800 text-center">
+                        <p class="text-slate-400 text-[10px]">Noise Ratio</p>
+                        <p id="tamper-noise-text" class="text-base font-bold text-slate-200 mt-0.5">8.1</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. OCR Text Extraction Card -->
+            <div class="bg-slate-900/80 backdrop-blur border border-slate-800 rounded-2xl p-6 space-y-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-2.5">
+                        <i data-lucide="file-text" class="w-5 h-5 text-emerald-400"></i>
+                        <h3 class="text-base font-bold text-white">3. RapidOCR Extracted Fields</h3>
+                    </div>
+                    <span id="ocr-conf-badge" class="px-2.5 py-1 rounded text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">92.5% Conf</span>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-xs text-left border-collapse">
+                        <tbody class="divide-y divide-slate-800">
+                            <tr class="hover:bg-slate-800/30">
+                                <td class="py-2.5 font-medium text-slate-400 w-1/3">Document Type</td>
+                                <td id="ocr-doc-type" class="py-2.5 font-semibold text-emerald-400">Aadhaar Card</td>
+                            </tr>
+                            <tr class="hover:bg-slate-800/30">
+                                <td class="py-2.5 font-medium text-slate-400">Applicant Name</td>
+                                <td id="ocr-name" class="py-2.5 font-semibold text-white">ARUN KUMAR VERMA</td>
+                            </tr>
+                            <tr class="hover:bg-slate-800/30">
+                                <td class="py-2.5 font-medium text-slate-400">Document Number</td>
+                                <td id="ocr-number" class="py-2.5 font-mono font-bold text-cyan-400">5489 2174 9632</td>
+                            </tr>
+                            <tr class="hover:bg-slate-800/30">
+                                <td class="py-2.5 font-medium text-slate-400">Date of Birth</td>
+                                <td id="ocr-dob" class="py-2.5 font-mono text-slate-200">14/11/1992</td>
+                            </tr>
+                            <tr class="hover:bg-slate-800/30">
+                                <td class="py-2.5 font-medium text-slate-400">Expiry Date</td>
+                                <td id="ocr-expiry" class="py-2.5 text-slate-200">Lifetime / Not Applicable</td>
+                            </tr>
+                            <tr class="hover:bg-slate-800/30">
+                                <td class="py-2.5 font-medium text-slate-400">Gender</td>
+                                <td id="ocr-gender" class="py-2.5 text-slate-200">Male</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 4. Format & Sanity Validation Card -->
+            <div class="bg-slate-900/80 backdrop-blur border border-slate-800 rounded-2xl p-6 space-y-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-2.5">
+                        <i data-lucide="check-square" class="w-5 h-5 text-indigo-400"></i>
+                        <h3 class="text-base font-bold text-white">4. Rule & Format Compliance</h3>
+                    </div>
+                    <span id="val-status-badge" class="px-2.5 py-1 rounded text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">PASSED</span>
+                </div>
+
+                <div class="space-y-2.5 text-xs">
+                    <div class="flex items-center justify-between p-2.5 rounded-lg bg-slate-950/50 border border-slate-800">
+                        <span class="text-slate-300">Document Number Checksum / Syntax</span>
+                        <span id="val-doc-num-status" class="font-semibold text-emerald-400">Valid</span>
+                    </div>
+                    <div class="flex items-center justify-between p-2.5 rounded-lg bg-slate-950/50 border border-slate-800">
+                        <span class="text-slate-300">Age Eligibility (>= 18 years)</span>
+                        <span id="val-age-status" class="font-semibold text-emerald-400">Valid (33 yrs)</span>
+                    </div>
+                    <div class="flex items-center justify-between p-2.5 rounded-lg bg-slate-950/50 border border-slate-800">
+                        <span class="text-slate-300">Document Validity / Expiry</span>
+                        <span id="val-expiry-status" class="font-semibold text-emerald-400">Active</span>
+                    </div>
+                    <div class="flex items-center justify-between p-2.5 rounded-lg bg-slate-950/50 border border-slate-800">
+                        <span class="text-slate-300">Applicant Name Verification</span>
+                        <span id="val-name-status" class="font-semibold text-emerald-400">Extracted</span>
+                    </div>
+                </div>
+
+                <div class="pt-2 flex items-center justify-end space-x-3">
+                    <button type="button" onclick="downloadJsonReport()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium flex items-center space-x-1.5 transition-colors border border-slate-700">
+                        <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                        <span>Export JSON</span>
+                    </button>
+                    <button type="button" onclick="window.print()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium flex items-center space-x-1.5 transition-colors border border-slate-700">
+                        <i data-lucide="printer" class="w-3.5 h-3.5"></i>
+                        <span>Print Audit</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Live Webcam Modal -->
+<div id="webcam-modal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 space-y-4">
+        <div class="flex items-center justify-between">
+            <h3 class="text-base font-bold text-white flex items-center space-x-2">
+                <i data-lucide="camera" class="w-5 h-5 text-cyan-400"></i>
+                <span>Live Webcam Capture</span>
+            </h3>
+            <button type="button" onclick="closeWebcamModal()" class="text-slate-400 hover:text-white">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+        </div>
+
+        <div class="relative rounded-xl overflow-hidden bg-black aspect-video flex items-center justify-center border border-slate-800">
+            <video id="webcam-video" autoplay playsinline class="w-full h-full object-cover"></video>
+            <canvas id="webcam-canvas" class="hidden"></canvas>
+            <div class="absolute inset-0 pointer-events-none border-2 border-cyan-400/40 rounded-xl m-6"></div>
+        </div>
+
+        <div class="flex items-center justify-between">
+            <button type="button" onclick="closeWebcamModal()" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium">Cancel</button>
+            <button type="button" onclick="captureWebcamSnapshot()" class="px-6 py-2.5 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs flex items-center space-x-2 shadow-lg shadow-cyan-500/20">
+                <i data-lucide="aperture" class="w-4 h-4"></i>
+                <span>Take Snapshot</span>
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}

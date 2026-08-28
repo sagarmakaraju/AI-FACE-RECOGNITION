@@ -1,0 +1,91 @@
+﻿<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}AI Face Recognition & Document Fraud Screening System | SIH26188{% endblock %}</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            500: '#10b981',
+                            600: '#059669',
+                            700: '#047857',
+                        },
+                        darkbg: '#0f172a',
+                        darkcard: '#1e293b',
+                        darkborder: '#334155'
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Custom Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans antialiased">
+    <!-- Navbar -->
+    <header class="sticky top-0 z-50 backdrop-blur-md bg-slate-900/80 border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <a href="{{ url_for('index') }}" class="flex items-center space-x-3 group">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 via-teal-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-emerald-500/20 group-hover:scale-105 transition-transform">
+                        <i data-lucide="shield-check" class="w-6 h-6 text-white"></i>
+                    </div>
+                    <div>
+                        <span class="font-bold text-lg tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">
+                            VERIF<span class="text-emerald-400">AI</span>
+                        </span>
+                        <span class="text-xs ml-2 px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-medium">SIH26188</span>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="flex items-center space-x-1 sm:space-x-4">
+                <a href="{{ url_for('index') }}" class="flex items-center space-x-2 px-3.5 py-2 rounded-lg text-sm font-medium transition-colors hover:bg-slate-800 text-slate-200 hover:text-white {% if request.path == '/' %}bg-slate-800/80 text-emerald-400 border border-slate-700/60{% endif %}">
+                    <i data-lucide="scan" class="w-4 h-4 text-emerald-400"></i>
+                    <span>Live Verification</span>
+                </a>
+                <a href="{{ url_for('history') }}" class="flex items-center space-x-2 px-3.5 py-2 rounded-lg text-sm font-medium transition-colors hover:bg-slate-800 text-slate-200 hover:text-white {% if request.path == '/history' %}bg-slate-800/80 text-emerald-400 border border-slate-700/60{% endif %}">
+                    <i data-lucide="history" class="w-4 h-4 text-cyan-400"></i>
+                    <span>Screening History</span>
+                </a>
+                <div class="h-5 w-px bg-slate-800 hidden sm:block"></div>
+                <div class="flex items-center space-x-2 text-xs text-slate-400 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-full">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span class="font-mono">AI Models Online</span>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800/80 bg-slate-950 py-6 text-center text-xs text-slate-500">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+            <p>Smart India Hackathon (SIH26188) — AI Face Recognition & Document Fraud Verification Engine</p>
+            <p class="text-slate-400">Deep Learning (YuNet + SFace) &bull; RapidOCR &bull; ELA Forensics &bull; XAI Risk Engine</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        lucide.createIcons();
+    </script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>
